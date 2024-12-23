@@ -27,24 +27,31 @@ end
 
 -- Function to open a Blade view
 function M.open_blade_view()
-  -- Find the project root
-  local root = find_project_root()
-  if not root then
-    print("Project root not found! Ensure you are in a Laravel project.")
-    return
-  end
-
-  -- Get the word under the cursor
-  local word = vim.fn.expand("<cword>")
-  -- Construct the Blade file path
-  local file = root .. "/resources/views/" .. word:gsub("%.", "/") .. ".blade.php"
-
-  -- Open the Blade file
-  if vim.fn.filereadable(file) == 1 then
-    vim.cmd("edit " .. file)
-  else
-    print("Blade file not found: " .. file)
-  end
+   -- Find the root directory
+   local root = find_project_root()
+   if not root then
+     print("Project root not found! Ensure you are in a Laravel project.")
+     return
+   end
+ 
+   -- Get the full string under the cursor
+   local cursor_string = vim.fn.expand("<cWORD>")
+   -- Extract the Blade view path (e.g., 'pages.sante.index')
+   local blade_view = cursor_string:match("view%((['\"])(.-)%1")
+   if not blade_view then
+     print("No valid Blade view reference found under the cursor.")
+     return
+   end
+ 
+   -- Replace dots with slashes to form the file path
+   local file_path = root .. "/resources/views/" .. blade_view:gsub("%.", "/") .. ".blade.php"
+ 
+   -- Open the Blade file
+   if vim.fn.filereadable(file_path) == 1 then
+     vim.cmd("edit " .. file_path)
+   else
+     print("Blade file not found: " .. file_path)
+   end
 end
 
 -- Set up keybinding for the command
