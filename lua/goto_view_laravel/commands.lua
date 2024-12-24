@@ -36,9 +36,12 @@ function M.open_blade_view()
 
   -- Get the full string under the cursor
   local cursor_string = vim.fn.expand("<cWORD>")
-  -- Extract the Blade view path (e.g., 'pages.sante.index')
+  
+  -- Extract the Blade view path from `view()` or `@include`
   local blade_view = cursor_string:match("view%s*%(%s*['\"]([^'\"]+)['\"]")
-  if not blade_view then
+    or cursor_string:match("@include%s*%(%s*['\"]([^'\"]+)['\"]")
+  
+    if not blade_view then
     print("No valid Blade view reference found under the cursor.")
     return
   end
