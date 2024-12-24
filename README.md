@@ -17,7 +17,6 @@ Add the following to your plugin configuration:
 ```lua
 {
   "yahyasghayron/nvim-goto-view-laravel",
-  config = function()
-    require("goto_view_laravel").setup()
-  end,
+  main = "goto_view_laravel",
+  opts = {}
 }
