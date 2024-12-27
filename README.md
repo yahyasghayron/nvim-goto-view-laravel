@@ -5,7 +5,7 @@ A Neovim plugin for navigating to Laravel Blade views quickly.
 ## Features
 
 - Dynamically detects the Laravel project root.
-- Opens the corresponding Blade view based on the word under the cursor.
+- Opens the corresponding Blade view, component or asset based on the path under the cursor.
 
 ## Installation
 
