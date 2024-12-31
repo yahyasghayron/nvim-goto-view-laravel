@@ -1,33 +1,11 @@
 local M = {}
 
--- Function to find the project root
-local function find_project_root()
-  local markers = { "artisan", "composer.json", "composer.lock" }
-  local path = vim.fn.getcwd() -- Start from the current working directory
-
-  -- Traverse upwards to find a marker file
-  while path do
-    for _, marker in ipairs(markers) do
-      local marker_path = path .. "/" .. marker
-      if vim.fn.filereadable(marker_path) == 1 then
-        return path
-      end
-    end
-    -- Move to the parent directory
-    local parent = vim.fn.fnamemodify(path, ":h")
-    if parent == path then
-      break -- Stop if we are at the root directory
-    end
-    path = parent
-  end
-
-  return nil -- No root found
-end
+local utils = require("nvim_laravel.utils")
 
 -- Function to open a Blade view
 function M.open_blade_view()
   -- Find the root directory
-  local root = find_project_root()
+  local root = utils.find_project_root()
   if not root then
     print("Project root not found! Ensure you are in a Laravel project.")
     return
@@ -59,7 +37,7 @@ end
 -- Function to open an asset file
 function M.open_asset_file()
   -- Find the root directory
-  local root = find_project_root()
+  local root = utils.find_project_root()
   if not root then
     print("Project root not found! Ensure you are in a Laravel project.")
     return
@@ -86,19 +64,54 @@ function M.open_asset_file()
   end
 end
 
--- Set up keybindings for commands
-vim.api.nvim_set_keymap(
-  "n",
-  "<leader>gv",
-  ":lua require('goto_view_laravel.commands').open_blade_view()<CR>",
-  { noremap = true, silent = true }
-)
+function M.open_config_value()
+  -- Find the root directory
+  local root = utils.find_project_root()
+  if not root then
+    print("Project root not found! Ensure you are in a Laravel project.")
+    return
+  end
 
-vim.api.nvim_set_keymap(
-  "n",
-  "<leader>ga",
-  ":lua require('goto_view_laravel.commands').open_asset_file()<CR>",
-  { noremap = true, silent = true }
-)
+  -- Get the full string under the cursor
+  local cursor_string = vim.fn.expand("<cWORD>")
+  
+  -- Extract the config path
+  local config_path = cursor_string:match("config%s*%(%s*['\"]([^'\"]+)['\"]")
+  if not config_path then
+    print("No valid config reference found under the cursor.")
+    return
+  end
+
+  -- Split the config path into file and key
+  local parts = {}
+  for part in config_path:gmatch("[^%.]+") do
+    table.insert(parts, part)
+  end
+
+  if #parts == 0 then
+    print("Invalid config path.")
+    return
+  end
+
+  -- Construct the config file path
+  local config_file = root .. "/config/" .. parts[1] .. ".php"
+
+  -- Open the config file
+  if vim.fn.filereadable(config_file) == 1 then
+    vim.cmd("edit " .. config_file)
+
+    -- If there is a nested key, search for it and place the cursor
+    if #parts > 1 then
+      local search_key = "['\"]" .. parts[2] .. "['\"]"
+      local result = vim.fn.search(search_key, "w")
+      if result == 0 then
+        print("Key not found: " .. parts[2])
+      end
+    end
+  else
+    print("Config file not found: " .. config_file)
+  end
+end
+
 
 return M
