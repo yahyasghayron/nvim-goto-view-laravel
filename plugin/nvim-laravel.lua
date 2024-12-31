@@ -1,0 +1,1 @@
+require("nvim_laravel").setup()
