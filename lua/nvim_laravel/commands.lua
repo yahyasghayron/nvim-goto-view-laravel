@@ -67,7 +67,7 @@ end
 -- Function to open a configuration value
 function M.open_config_value()
   -- Find the root directory
-  local root = find_project_root()
+  local root = utils.find_project_root()
   if not root then
     print("Project root not found! Ensure you are in a Laravel project.")
     return
