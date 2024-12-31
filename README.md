@@ -4,12 +4,17 @@ A Neovim plugin for navigating to Laravel Blade views quickly.
 
 ## Features
 
-- Dynamically detects the Laravel project root.
-- Opens the corresponding Blade view, component or asset based on the path under the cursor.
+- Project-Aware Navigation:
 
-## Future Features
-- access config values under the cursor
-- add auto-complete for model feilds 
+  - Dynamically detects the Laravel project root.
+  - Quickly navigate to Blade views, components, and asset files under the cursor.
+
+- Enhanced Framework Support (Coming Soon):
+
+  - Access configuration values directly under the cursor.
+  - Auto-complete for model fields and relationships.
+  - Explore and navigate facade methods and helper functions.
+  - Jump to routes, migrations, or controllers with ease.
 
 ## Installation
 
