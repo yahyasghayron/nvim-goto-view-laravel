@@ -19,6 +19,14 @@ M.setup = function()
     ":lua require('nvim_laravel.commands').open_asset_file()<CR>",
     { noremap = true, silent = true }
   )
+
+    -- Add a keybinding for the new functionality
+  vim.api.nvim_set_keymap(
+    "n",
+    "<leader>gc",
+    ":lua require('nvim-laravel.commands').open_config_value()<CR>",
+    { noremap = true, silent = true }
+  )
 end
 
 return M

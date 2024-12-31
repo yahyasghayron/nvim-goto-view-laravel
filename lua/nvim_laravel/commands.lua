@@ -64,19 +64,51 @@ function M.open_asset_file()
   end
 end
 
--- Set up keybindings for commands
-vim.api.nvim_set_keymap(
-  "n",
-  "<leader>gv",
-  ":lua require('goto_view_laravel.commands').open_blade_view()<CR>",
-  { noremap = true, silent = true }
-)
+-- Function to open a configuration value
+function M.open_config_value()
+  -- Find the root directory
+  local root = find_project_root()
+  if not root then
+    print("Project root not found! Ensure you are in a Laravel project.")
+    return
+  end
 
-vim.api.nvim_set_keymap(
-  "n",
-  "<leader>ga",
-  ":lua require('goto_view_laravel.commands').open_asset_file()<CR>",
-  { noremap = true, silent = true }
-)
+  -- Get the full string under the cursor
+  local cursor_string = vim.fn.expand("<cWORD>")
+  
+  -- Extract the config path
+  local config_path = cursor_string:match("config%s*%(%s*['\"]([^'\"]+)['\"]")
+  if not config_path then
+    print("No valid config reference found under the cursor.")
+    return
+  end
+
+  -- Split the config path into file and key
+  local parts = {}
+  for part in config_path:gmatch("[^%.]+") do
+    table.insert(parts, part)
+  end
+
+  if #parts == 0 then
+    print("Invalid config path.")
+    return
+  end
+
+  -- Construct the config file path
+  local config_file = root .. "/config/" .. parts[1] .. ".php"
+
+  -- Open the config file
+  if vim.fn.filereadable(config_file) == 1 then
+    vim.cmd("edit " .. config_file)
+
+    -- If there is a nested key, search for it
+    if #parts > 1 then
+      local search_key = table.concat(parts, ".", 2)
+      vim.cmd("normal /['\"]" .. search_key .. "['\"]")
+    end
+  else
+    print("Config file not found: " .. config_file)
+  end
+end
 
 return M
