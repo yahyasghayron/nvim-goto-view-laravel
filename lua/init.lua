@@ -2,7 +2,7 @@ local M = {}
 
 M.setup = function()
   -- Load commands
-  require("goto_view_laravel.commands")
+  require("commands")
 end
 
 return M

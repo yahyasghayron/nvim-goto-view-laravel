@@ -25,6 +25,5 @@ Add the following to your plugin configuration:
 ```lua
 {
   "yahyasghayron/nvim-goto-view-laravel",
-  main = "goto_view_laravel",
   opts = {}
 }
