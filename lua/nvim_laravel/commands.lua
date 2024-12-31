@@ -64,7 +64,6 @@ function M.open_asset_file()
   end
 end
 
--- Function to open a configuration value
 function M.open_config_value()
   -- Find the root directory
   local root = utils.find_project_root()
@@ -101,14 +100,18 @@ function M.open_config_value()
   if vim.fn.filereadable(config_file) == 1 then
     vim.cmd("edit " .. config_file)
 
-    -- If there is a nested key, search for it
+    -- If there is a nested key, search for it and place the cursor
     if #parts > 1 then
-      local search_key = table.concat(parts, ".", 2)
-      vim.cmd("normal /['\"]" .. search_key .. "['\"]")
+      local search_key = "['\"]" .. parts[2] .. "['\"]"
+      local result = vim.fn.search(search_key, "w")
+      if result == 0 then
+        print("Key not found: " .. parts[2])
+      end
     end
   else
     print("Config file not found: " .. config_file)
   end
 end
+
 
 return M
