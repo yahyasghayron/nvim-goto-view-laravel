@@ -17,6 +17,7 @@ function M.open_blade_view()
   -- Extract the Blade view path from `view()` or `@include`
   local blade_view = cursor_string:match("view%s*%(%s*['\"]([^'\"]+)['\"]")
     or cursor_string:match("@include%s*%(%s*['\"]([^'\"]+)['\"]")
+    or cursor_string:match("markdown%s*%(%s*['\"]([^'\"]+)['\"]")
   
     if not blade_view then
     print("No valid Blade view reference found under the cursor.")
